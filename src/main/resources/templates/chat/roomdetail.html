@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Websocket ChatRoom</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css">
+    <style>
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div class="container" id="app">
+    <div>
+        <h2 id="roomName"></h2>
+    </div>
+    <div class="input-group">
+        <div class="input-group-prepend">
+            <label class="input-group-text">내용</label>
+        </div>
+        <input type="text" class="form-control" id="messageInput">
+        <div class="input-group-append">
+            <button class="btn btn-primary" type="button" id="sendButton">보내기</button>
+        </div>
+    </div>
+    <ul class="list-group" id="messageList">
+    </ul>
+    <div></div>
+</div>
+<!-- JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/axios@0.21.1/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.5.0/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@5.0.0/bundles/stomp.umd.min.js"></script>
+<script>
+    // websocket & stomp initialize
+    var sock = new SockJS("/ws-stomp");
+    var ws = Stomp.over(sock);
+
+    // DOM elements
+    var app = document.getElementById('app');
+    var roomNameEl = document.getElementById('roomName');
+    var messageInput = document.getElementById('messageInput');
+    var sendButton = document.getElementById('sendButton');
+    var messageList = document.getElementById('messageList');
+
+    // Chat data
+    var roomId = localStorage.getItem('wschat.roomId');
+    var sender = localStorage.getItem('wschat.sender');
+    var room = {};
+    var messages = [];
+
+    function findRoom() {
+        axios.get('/chat/room/' + roomId).then(response => {
+            room = response.data;
+            roomNameEl.textContent = room.name;
+        });
+    }
+
+    function sendMessage() {
+        ws.send("/pub/chat/message", {}, JSON.stringify({type:'TALK', roomId:roomId, sender:sender, message:messageInput.value}));
+        messageInput.value = '';
+    }
+
+    function recvMessage(recv) {
+        messages.unshift({"type":recv.type,"sender":recv.type=='ENTER'?'[알림]':recv.sender,"message":recv.message});
+        updateMessageList();
+    }
+
+    function updateMessageList() {
+        messageList.innerHTML = '';
+        messages.forEach(function(message) {
+            var li = document.createElement('li');
+            li.className = 'list-group-item';
+            li.textContent = message.sender + ' - ' + message.message;
+            messageList.appendChild(li);
+        });
+    }
+
+    // Event listeners
+    sendButton.addEventListener('click', sendMessage);
+    messageInput.addEventListener('keyup', function(event) {
+        if (event.key === 'Enter') {
+            sendMessage();
+        }
+    });
+
+    // Initialize
+    findRoom();
+
+    // pub/sub event
+    ws.connect({}, function(frame) {
+        ws.subscribe("/sub/chat/room/"+roomId, function(message) {
+            var recv = JSON.parse(message.body);
+            recvMessage(recv);
+        });
+        ws.send("/pub/chat/message", {}, JSON.stringify({type:'ENTER', roomId:roomId, sender:sender}));
+    }, function(error) {
+        alert("error "+error);
+    });
+</script>
+</body>
+</html>

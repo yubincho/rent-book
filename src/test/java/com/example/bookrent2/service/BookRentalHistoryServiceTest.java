@@ -1,14 +1,15 @@
 package com.example.bookrent2.service;
 
 
-import com.example.bookrent2.model.book.Book;
-import com.example.bookrent2.model.book.BookRepository;
-import com.example.bookrent2.model.bookrental.BookRentalHistory;
-import com.example.bookrent2.model.bookrental.BookRentalHistoryRepository;
-import com.example.bookrent2.model.bookrental.RentStatus;
-import com.example.bookrent2.model.user.Role;
-import com.example.bookrent2.model.user.User;
-import com.example.bookrent2.model.user.UserRepository;
+import com.example.bookrent2.rentBook.model.book.Book;
+import com.example.bookrent2.rentBook.model.book.BookRepository;
+import com.example.bookrent2.rentBook.model.bookrental.BookRentalHistory;
+import com.example.bookrent2.rentBook.model.bookrental.BookRentalHistoryRepository;
+import com.example.bookrent2.rentBook.model.bookrental.RentStatus;
+import com.example.bookrent2.rentBook.model.user.Role;
+import com.example.bookrent2.rentBook.model.user.User;
+import com.example.bookrent2.rentBook.model.user.UserRepository;
+import com.example.bookrent2.rentBook.service.BookRentalHistoryService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

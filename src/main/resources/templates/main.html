@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Websocket Chat</title>
+  <style>
+    body{margin-top:20px;}
+    .cover-background {
+      position: relative !important;
+      background-size: cover !important;
+      overflow: hidden !important;
+      background-position: center !important;
+      background-repeat: no-repeat !important;
+    }
+    .p-0 {
+      padding: 0!important;
+    }
+    section {
+      padding: 120px 0;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .error-page {
+      background-color: #BABABA4A;
+      -webkit-backdrop-filter: blur(9px);
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(234,234,235,0.2);
+      padding: 80px 20px;
+    }
+    .text-center {
+      text-align: center!important;
+    }
+    .error-page h1 {
+      font-size: 200px;
+      line-height: 1;
+      font-weight: 600;
+    }
+    .text-secondary {
+      color: #15395A !important;
+    }
+    .mb-4 {
+      margin-bottom: 1.5rem!important;
+    }
+  </style>
+</head>
+
+<body class="gradient-custom">
+<section class="p-0 bg-img cover-background" style="background-image: url(https://bootdey.com/img/Content/bg1.jpg);">
+  <div class="container-fluid d-flex flex-column">
+    <div class="row align-items-center justify-content-center min-vh-100">
+      <div class="col-md-9 col-lg-6 my-5">
+        <div class="text-center error-page">
+          <h2 class="mb-4 text-white" >Chatting Service</h2>
+
+          <h1 class="mb-0 text-secondary" id="" ></h1>
+
+          <h2 class="mb-4 text-white"></h2>
+          <div th:if="${!isLoggedIn}">
+            <p class="w-sm-80 mx-auto mb-4 text-white" style="font-weight: bold; color: cornflowerblue">로그인을 해주세요!</p>
+            <a th:href="@{/login}" class="btn btn-info btn-lg me-sm-2 mb-2 mb-sm-0">Google 로그인</a>
+          </div>
+          <div th:if="${isLoggedIn}">
+            <p class="w-sm-80 mx-auto mb-4 text-white">환영합니다!</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</body>
+
+
+<!-- SockJS and STOMP JS 라이브러리 추가 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.0/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+
+<script>
+
+</script>
+
+</body>
+</html>
